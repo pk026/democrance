@@ -17,7 +17,7 @@ class Policy(models.Model):
     POLICY_STATES = [
         ('new', 'New'),
         ('quoted', 'Quoted'),
-        ('active', 'Active'),
+        ('bound', 'Bound'),
     ]
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='policies')
     type = models.CharField(max_length=100)

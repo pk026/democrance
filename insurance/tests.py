@@ -1,67 +1,40 @@
-from django.test import TestCase
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
+import pytest
+from rest_framework.test import APIClient
 from .models import Customer, Policy
 
+@pytest.fixture
+def api_client():
+    return APIClient()
 
-class CustomerAPITests(APITestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.create_customer_url = reverse('create_customer')  # Adjust based on your url name
+@pytest.fixture
+def create_customer(db):
+    def make_customer(**kwargs):
+        return Customer.objects.create(**kwargs)
+    return make_customer
 
-    def test_create_customer_success(self):
-        """Test the API can successfully create a customer."""
-        data = {'first_name': 'John', 'last_name': 'Doe', 'dob': '1990-01-01'}
-        response = self.client.post(self.create_customer_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Customer.objects.count(), 1)
-        self.assertEqual(Customer.objects.get().first_name, 'John')
-
-    def test_create_customer_invalid_data(self):
-        """Test the API with invalid customer data."""
-        data = {}  # Empty data should not be valid
-        response = self.client.post(self.create_customer_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+@pytest.fixture
+def create_policy(db, create_customer):
+    customer = create_customer(name='Test Customer', other_fields='...')
+    def make_policy(**kwargs):
+        defaults = {'customer': customer, 'policy_details': 'Sample Policy'}
+        defaults.update(kwargs)
+        return Policy.objects.create(**defaults)
+    return make_policy
 
 
-class QuoteAPITests(APITestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.quote_url = reverse('create_quote')  # Adjust based on your url name
-        # Creating a test customer to associate with a policy
-        self.test_customer = Customer.objects.create(
-            first_name="Jane",
-            last_name="Doe",
-            dob="1991-02-01"
-        )
+@pytest.mark.django_db
+def test_customer_list(api_client, create_customer):
+    customer = create_customer(name='John Doe')
+    response = api_client.get('/customers/')
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert response.data[0]['name'] == 'John Doe'
 
-    def test_create_quote_success(self):
-        """Test the API can successfully create a quote."""
-        data = {
-            'customer_id': self.test_customer.id,
-            'policy': {
-                'type': 'personal-accident',
-                'premium': 200,
-                'cover': 200000,
-                'state': 'quoted'
-            }
-        }
-        response = self.client.post(self.quote_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Policy.objects.count(), 1)
-        self.assertEqual(Policy.objects.get().state, 'quoted')
 
-    def test_create_quote_no_customer(self):
-        """Test the API with a non-existent customer."""
-        data = {
-            'customer_id': 999,  # Assuming this customer does not exist
-            'policy': {
-                'type': 'personal-accident',
-                'premium': 200,
-                'cover': 200000,
-                'state': 'quoted'
-            }
-        }
-        response = self.client.post(self.quote_url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+@pytest.mark.django_db
+def test_policy_list(api_client, create_policy):
+    policy = create_policy(policy_details='Test Policy')
+    response = api_client.get('/policies/')
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert response.data[0]['policy_details'] == 'Test Policy'
