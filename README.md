@@ -89,4 +89,4 @@ To get the project up and running on your local machine, follow these steps:
 
 ## Reference video
 
-1. 
+1. https://www.loom.com/share/e5ad3a9d40b341668e786e923dd566db
