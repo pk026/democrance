@@ -22,6 +22,11 @@ class PolicyViewSet(viewsets.ModelViewSet):
         """
         Optionally restricts the returned policies to a given customer,
         by filtering against a `customer` query parameter in the URL.
+
+        Another way of filtering policies is fetch customer_id of logged in user
+        return only his/her policies,
+        When we implement authentication we can check if looged user is staff
+        then we get the customer_id from query param, else we fatch from db for logged in user.
         """
         queryset = Policy.objects.all()
         customer_id = self.request.query_params.get("customer_id")
