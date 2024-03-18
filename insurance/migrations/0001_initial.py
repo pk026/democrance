@@ -5,47 +5,114 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Customer',
+            name="Customer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('first_name', models.CharField(max_length=64)),
-                ('last_name', models.CharField(max_length=64)),
-                ('dob', models.DateField()),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=64)),
+                ("last_name", models.CharField(max_length=64)),
+                ("dob", models.DateField()),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Policy',
+            name="Policy",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('personal-accident', 'Personal Accident'), ('health', 'Health'), ('life', 'Life')], max_length=32)),
-                ('premium', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('cover', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('state', models.CharField(choices=[('quoted', 'Quoted'), ('accepted', 'Accepted'), ('bound', 'Bound')], default='quoted', max_length=10)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='policies', to='insurance.customer')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("personal-accident", "Personal Accident"),
+                            ("health", "Health"),
+                            ("life", "Life"),
+                        ],
+                        max_length=32,
+                    ),
+                ),
+                ("premium", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("cover", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("quoted", "Quoted"),
+                            ("accepted", "Accepted"),
+                            ("bound", "Bound"),
+                        ],
+                        default="quoted",
+                        max_length=10,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="policies",
+                        to="insurance.customer",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PolicyState',
+            name="PolicyState",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('state', models.CharField(choices=[('quoted', 'Quoted'), ('accepted', 'Accepted'), ('bound', 'Bound')], max_length=10)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('policy', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='history', to='insurance.policy')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "state",
+                    models.CharField(
+                        choices=[
+                            ("quoted", "Quoted"),
+                            ("accepted", "Accepted"),
+                            ("bound", "Bound"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "policy",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="history",
+                        to="insurance.policy",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['timestamp'],
+                "ordering": ["timestamp"],
             },
         ),
     ]

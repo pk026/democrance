@@ -1,8 +1,12 @@
-from rest_framework import generics, viewsets, status
-from rest_framework.views import APIView
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
+
 from insurance.models import Customer, Policy, PolicyState
-from insurance.serializers import CustomerSerializer, PolicySerializer, PolicyStateSerializer
+from insurance.serializers import (
+    CustomerSerializer,
+    PolicySerializer,
+    PolicyStateSerializer,
+)
 
 
 class CustomerViewSet(generics.CreateAPIView):
@@ -20,7 +24,7 @@ class PolicyViewSet(viewsets.ModelViewSet):
         by filtering against a `customer` query parameter in the URL.
         """
         queryset = Policy.objects.all()
-        customer_id = self.request.query_params.get('customer_id')
+        customer_id = self.request.query_params.get("customer_id")
         if customer_id is not None:
             queryset = queryset.filter(customer_id=customer_id)
         return queryset
@@ -37,7 +41,7 @@ class PolicyViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         policy = self.get_object()
         previous_state = policy.state
-        kwargs['partial'] = True
+        kwargs["partial"] = True
         response = self.update(request, *args, **kwargs)
 
         if response.status_code == status.HTTP_200_OK:
@@ -60,6 +64,5 @@ class PolicyHistoryView(generics.ListAPIView):
         This view should return a list of all the policy states
         for the policy as determined by the policy_id portion of the URL.
         """
-        policy_id = self.kwargs['policy_id']
-        return PolicyState.objects.filter(policy_id=policy_id).order_by('-timestamp')
-
+        policy_id = self.kwargs["policy_id"]
+        return PolicyState.objects.filter(policy_id=policy_id).order_by("-timestamp")

@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Customer(models.Model):
@@ -18,19 +17,21 @@ class Policy(models.Model):
     HEALTH = "health"
     LIFE = "life"
     TYPE_CHOICES = [
-        (PERSONAL_ACCIDENT, 'Personal Accident'),
-        (HEALTH, 'Health'),
-        (LIFE, 'Life')
+        (PERSONAL_ACCIDENT, "Personal Accident"),
+        (HEALTH, "Health"),
+        (LIFE, "Life"),
     ]
     QUOTED = "quoted"
     ACCEPTED = "accepted"
     BOUND = "bound"
     POLICY_STATES = [
-        (QUOTED, 'Quoted'),
-        (ACCEPTED, 'Accepted'),
-        (BOUND, 'Bound'),
+        (QUOTED, "Quoted"),
+        (ACCEPTED, "Accepted"),
+        (BOUND, "Bound"),
     ]
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='policies')
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, related_name="policies"
+    )
     type = models.CharField(max_length=32, choices=TYPE_CHOICES)
     premium = models.DecimalField(max_digits=10, decimal_places=2)
     cover = models.DecimalField(max_digits=10, decimal_places=2)
@@ -43,9 +44,9 @@ class Policy(models.Model):
 
 
 class PolicyState(models.Model):
-    policy = models.ForeignKey(Policy, on_delete=models.CASCADE, related_name='history')
+    policy = models.ForeignKey(Policy, on_delete=models.CASCADE, related_name="history")
     state = models.CharField(max_length=10, choices=Policy.POLICY_STATES)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['timestamp']
+        ordering = ["timestamp"]

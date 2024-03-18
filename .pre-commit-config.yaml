@@ -1,0 +1,38 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/dhruvmanila/remove-print-statements
+    rev: v0.5.2
+    hooks:
+      - id: remove-print-statements
+
+        exclude: (task_handler.py|scripts/|app/rule_parser/parser.py)
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        name: Black Python code formatting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: Sorting import statements
+        args: ["--profile", "black"]
+        files: \.py$
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.0
+    hooks:
+      - id: autoflake
+        name: Remove unused variables and imports
+        args: [
+            "--in-place",
+            "--remove-all-unused-imports",
+            "--remove-unused-variables",
+            # "--expand-star-imports",
+            "--ignore-init-module-imports",
+          ]
+        files: \.py$

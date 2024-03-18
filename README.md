@@ -68,22 +68,22 @@ To get the project up and running on your local machine, follow these steps:
 1. Clone the repository:
    ```bash
    git clone https://github.com/pk026/democrance
-2. Create a virtualenv using: 
+2. Create a virtualenv using:
      ```bash
      python3 -m venv venv
 3. Activate environment using:
    ```bash
      source venv/bin/activate
 4. Install requirements using:
-     ```bash 
+     ```bash
     pip install -r requirements.txt
-5. Create database schema using: 
-    ```bash 
+5. Create database schema using:
+    ```bash
         python manage.py migrate
-6. Create a superuser: 
-    ```bash 
+6. Create a superuser:
+    ```bash
     python manage.py createsuperuser --username admin --email admin@example.com
-7. run development server: 
+7. run development server:
     ```bash
     python manage.py runserver
 
