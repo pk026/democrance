@@ -1,7 +1,7 @@
 
 # Democrance
 
-## Problem Statements (What I Understood 😉):
+## Problem Statements:
 1. Customer does signup.
 2. Creates a quote.
 3. Reviewed the quote and marks it accepted.
@@ -86,6 +86,5 @@ To get the project up and running on your local machine, follow these steps:
 7. run development server: 
     ```bash
     python manage.py runserver
-
 
 ## Testing
