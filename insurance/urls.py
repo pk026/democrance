@@ -4,6 +4,7 @@ from insurance.views import CustomerViewSet, PolicyViewSet, PolicyHistoryView
 
 router = DefaultRouter()
 router.register(r'quote', PolicyViewSet)
+router.register(r'policies', PolicyViewSet)
 
 
 urlpatterns = [

@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from insurance.models import Customer, Policy, PolicyState
@@ -14,7 +14,18 @@ class PolicyViewSet(viewsets.ModelViewSet):
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
 
-    def post(self, request, *args, **kwargs):
+    def get_queryset(self):
+        """
+        Optionally restricts the returned policies to a given customer,
+        by filtering against a `customer` query parameter in the URL.
+        """
+        queryset = Policy.objects.all()
+        customer_id = self.request.query_params.get('customer_id')
+        if customer_id is not None:
+            queryset = queryset.filter(customer_id=customer_id)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             policy = serializer.save()
@@ -23,10 +34,9 @@ class PolicyViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs):
         policy = self.get_object()
         previous_state = policy.state
-
         kwargs['partial'] = True
         response = self.update(request, *args, **kwargs)
 
